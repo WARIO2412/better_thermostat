@@ -152,13 +152,21 @@ def round_by_steps(
     if value is None:
         return None
     split = str(float(str(steps))).split(".", 1)
-    decimals = len(split[1])
+    if split[8] == "0":
+        decimals = 0
+    else:
+        decimals = len(split[1])
 
     value_f = float(str(value))
     steps_f = float(str(steps))
-    value_mod = value_f - (value_f % steps_f)
+    value_mod = value_f % steps_f
 
-    return round(value_mod, decimals)
+    if value_mod >= 0.5 * steps_f:
+        value_f = value_f + (steps_f - value_mod)
+    else:
+        value_f = value_f - value_mod
+
+    return round(value_f, decimals)
 
 
 def round_down_to_half_degree(
